@@ -24,23 +24,28 @@ def close_ui(webui, blue):
     webui.kill()
     blue.kill()
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
     try:
         CFG = configparser.ConfigParser()
         CFG.read(CONFIG)
     except IOError as error:
         print("Cannot load configuration file: ", error)
     create_ipc_socket(CFG["GENERAL"]["ipc_socket"])
-    subprocess.Popen([
+    WEBUI = subprocess.Popen([
+        f"{CFG['GENERAL']['install_path']}/control/web.py",
+        f"{CFG['WEB']['ip']}",
+        f"{CFG['WEB']['port']}",
+        f"{CFG['GENERAL']['install_path']}/control/views",
+        f"{CFG['GENERAL']['ipc_socket']}"
+        ])
+    BLUE = subprocess.Popen([
+        f"{CFG['GENERAL']['install_path']}/control/bluetooth.py",
+        f"{CFG['GENERAL']['ipc_socket']}"
+        ])
+    subprocess.call([
         "mpv",
         f"--input-ipc-server={CFG['GENERAL']['ipc_socket']}",
         "--playlist",
         f"{CFG['GENERAL']['install_path']}/playlists/main.m3u"
         ])
-    WEBUI = subprocess.Popen([
-        f"{CFG['GENERAL']['install_path']}/control/web.py",
-        f"{CFG['WEB']['ip']}",
-        f"{CFG['WEB']['port']}"
-    ])
-    BLUE = subprocess.Popen([f"{CFG['GENERAL']['install_path']}/control/bluetooth.py"])
-    atexit.register(close_ui, webui=WEBUI, blue=BLUE)
+    atexit.register(close_ui, webui=WEBUI, blue=BLUE)        
