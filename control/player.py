@@ -1,41 +1,46 @@
 #!/usr/bin/env python3
 
+"""Init mpv player script"""
+
+import configparser
 import subprocess
+import atexit
 import socket
-import json
-import sys
 import os
 
-SOCKET = "/tmp/socket-mpv"
-INSTALL = "/home/trilobyte/git/remote-mpv-control"
-PLAYLIST = f"{INSTALL}/playlists/main.m3u"
-CONFIG = f"{INSTALL}/control/config.json"
+CONFIG = os.path.expanduser("~/.remote-mpv-control/config.conf")
 
-def load_config():
-    try:
-        return json.load(open(CONFIG))
-    except IOError as e:
-        print("Cannot load configuration file: ", e)
-
-def create_ipc_socket():
+def create_ipc_socket(sock):
+    """Socket creation to control player"""
     mpv_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
-        os.remove(SOCKET)
-        mpv_socket.bind(SOCKET)
-    except OSError as e:
-        print("Socket couldn't be created: ", e)    
+        os.remove(sock)
+        mpv_socket.bind(sock)
+    except OSError as error:
+        print("Socket couldn't be created: ", error)
+
+def close_ui(webui, blue):
+    """Close all UI when player is closed"""
+    webui.kill()
+    blue.kill()
 
 if __name__ == "__main__":
-    create_ipc_socket()
-    config = load_config()
-    for script in config["control_scripts"]:
-        os.chmod(f"{INSTALL}/control/{script}", 0o750)
-    subprocess.call([
+    try:
+        CFG = configparser.ConfigParser()
+        CFG.read(CONFIG)
+    except IOError as error:
+        print("Cannot load configuration file: ", error)
+    create_ipc_socket(CFG["GENERAL"]["ipc_socket"])
+    subprocess.Popen([
         "mpv",
-        f"--input-ipc-server={SOCKET}",
+        f"--input-ipc-server={CFG['GENERAL']['ipc_socket']}",
         "--playlist",
-        PLAYLIST
+        f"{CFG['GENERAL']['install_path']}/playlists/main.m3u"
         ])
-    subprocess.call([f"{INSTALL}/control/web.py", config["web_ip"], config["web_port"]])
-    subprocess.call([f"{INSTALL}/control/bluetooth.py"])
-    
+    WEBUI = subprocess.Popen([
+        f"{CFG['GENERAL']['install_path']}/control/web.py",
+        f"{CFG['WEB']['ip']}",
+        f"{CFG['WEB']['port']}"
+    ])
+    BLUE = subprocess.Popen([f"{CFG['GENERAL']['install_path']}/control/bluetooth.py"])
+    atexit.register(close_ui, webui=WEBUI, blue=BLUE)
