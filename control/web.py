@@ -2,48 +2,42 @@
 
 from bottle import route, run, template, view, static_file, redirect, SimpleTemplate
 import subprocess
+import config
 import socket
 import sys
 
 # NEED TO REWRITE COMPLETELY
 
-WEB_DIR = sys.argv[3]
-IPC_SOCKET = sys.argv[4]
-
-def command(cmd):
-    subprocess.call(f"echo {cmd} | socat - {IPC_SOCKET}", shell=True)
+CFG = config.read_config()
+FULLSCREEN = True
 
 def volume_info():
     a = "amixer -R | grep 'Front Left: Playback' | cut -d[ -f2 | cut -d] -f1"
     i = subprocess.Popen(a,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     return str(i.communicate()[0]).replace("b","").replace("\\n","").replace("%", " %")
 
-def notification(msg):
-    cmd = "echo {0} | osd_cat -p top -A center -d 1 -o 900 -c WHITE -s 3 -f -cronyx-*-medium-*-*-*-*-240-100-100-*-*-*-*".format(msg)
-    subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-
 @route('/views/css/<filename>')
 def server_static(filename):
-    return static_file(filename, root=WEB_DIR +'/views/css')
+    return static_file(filename, root=f"{CFG['GENERAL']['install_path']}/control/views/css")
 
 @route('/start')
 @route('/start/<selection>')
 @view('start')
-def start(playing=None, selection=None):    
-    pass
-    #return template('start', playing=playlist[player.playlist_pos], playlist=new_playlist, forward=fwrd, backward=bcrd)
+def start(playing=None, selection=None):  
+    config.mpv_command("set playlist-pos 0")      
+    return template('start', playing="XXX", playlist={"x": "xx", "xx":"xxxx"})
 
-@route('/play/<p_id>')
+@route('/play/<key>')
 @view('start')
-def play(p_id=None):
-    redirect("/start")    
+def play(key=None):
+    config.mpv_command(config.MPV_COMMANDS_MAP[key])
+    redirect("/start")
 
-@route('/key/<operation>')
-#@view('start')
-def keypress(operation=None):
-    #subprocess.call(["xdotool", "key", operation])
-    command("cycle pause")
-    #redirect("/start")
+@route('/window/screen')
+@view('start')
+def window(screen=None):
+    config.key_command("f")
+    redirect("/start")
 
 @route('/volume/<change>')
 @view('start')
@@ -54,12 +48,12 @@ def volume(change=None):
         operation = "5%-"
     elif change == "mute":
         operation = "toggle"
-        notification("Ztlumit")
+        config.mpv_command(f"show-text Ztlumit")
     else:
         print("Wrong call :-(")
     subprocess.call(["amixer", "-q", "sset", "Master", operation])
     if change != "mute":
-        notification(volume_info())
+        config.mpv_command(f"show-text {(volume_info())}")
     redirect("/start") 
 
 @route('/poweroff')
@@ -69,13 +63,13 @@ def poweroff(change=None):
 
 @route('/playeroff')
 def playeroff(change=None):
-    subprocess.call([WEB_DIR + "/stop.sh"])
+    subprocess.call([f"{CFG['GENERAL']['install_path']}/support/stop.sh"])
 
 @route('/sleep')
 def sleep(change=None):
-    subprocess.call(["xdotool", "key", "p"])
+    config.key_command("p")
     subprocess.call(["xset", "-display", ":0.0", "dpms", "force", "off"])
     redirect("/start")
 
 if __name__ == "__main__":
-    run(host="127.0.0.1", port=8081)
+    run(host=CFG['WEB']['ip'], port=CFG['WEB']['port'])

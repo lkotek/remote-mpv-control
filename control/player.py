@@ -2,13 +2,11 @@
 
 """Init mpv player script"""
 
-import configparser
 import subprocess
+import config
 import atexit
 import socket
 import os
-
-CONFIG = os.path.expanduser("~/.remote-mpv-control/config.conf")
 
 def create_ipc_socket(sock):
     """Socket creation to control player"""
@@ -19,33 +17,20 @@ def create_ipc_socket(sock):
     except OSError as error:
         print("Socket couldn't be created: ", error)
 
-def close_ui(webui, blue):
+def close_ui(webui, bluetooth):
     """Close all UI when player is closed"""
     webui.kill()
-    blue.kill()
+    bluetooth.kill()
 
 if __name__ == "__main__":    
-    try:
-        CFG = configparser.ConfigParser()
-        CFG.read(CONFIG)
-    except IOError as error:
-        print("Cannot load configuration file: ", error)
-    create_ipc_socket(CFG["GENERAL"]["ipc_socket"])
-    WEBUI = subprocess.Popen([
-        f"{CFG['GENERAL']['install_path']}/control/web.py",
-        f"{CFG['WEB']['ip']}",
-        f"{CFG['WEB']['port']}",
-        f"{CFG['GENERAL']['install_path']}/control/views",
-        f"{CFG['GENERAL']['ipc_socket']}"
-        ])
-    BLUE = subprocess.Popen([
-        f"{CFG['GENERAL']['install_path']}/control/bluetooth.py",
-        f"{CFG['GENERAL']['ipc_socket']}"
-        ])
+    cfg = config.read_config()
+    create_ipc_socket(cfg["GENERAL"]["ipc_socket"])
+    WEBUI = subprocess.Popen([f"{cfg['GENERAL']['install_path']}/control/web.py"])
+    BLUE = subprocess.Popen([f"{cfg['GENERAL']['install_path']}/control/bluetooth.py"])
     subprocess.call([
         "mpv",
-        f"--input-ipc-server={CFG['GENERAL']['ipc_socket']}",
+        f"--input-ipc-server={cfg['GENERAL']['ipc_socket']}",
         "--playlist",
-        f"{CFG['GENERAL']['install_path']}/playlists/main.m3u"
+        f"{cfg['GENERAL']['install_path']}/playlists/main.m3u"
         ])
-    atexit.register(close_ui, webui=WEBUI, blue=BLUE)        
+    atexit.register(close_ui, webui=WEBUI, bluetooth=BLUE)        
