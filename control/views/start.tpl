@@ -21,9 +21,9 @@
 
 <div class="cntrl_items">
 <a class="control" href="/window/screen">Okno</a>
-<a class="control" href="/control/prev">&nbsp;&lt;&lt;&nbsp;</a>
+<a class="control" href="/playlist/prev">&nbsp;&lt;&lt;&nbsp;</a>
 <a class="control" href="/control/pause">&nbsp;|| &gt;&nbsp;</a>
-<a class="control" href="/control/next">&nbsp;&gt;&gt;&nbsp;</a>
+<a class="control" href="/playlist/next">&nbsp;&gt;&gt;&nbsp;</a>
 </div>
 
 <div class="cntrl_items">

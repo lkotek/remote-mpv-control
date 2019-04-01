@@ -22,24 +22,38 @@ def server_static(filename):
 
 @route('/start')
 @view('start')
-def start(playing=None, position=0):      
+def start(playing=None, position=0):   
+    position = int(main.load_playlist_position())   
     return template('start', playing=main.playlist[int(position)], playlist=main.playlist)
 
 @route('/play/<position>')
 @view('play')
 def play(playing=None, position=0):     
     main.mpv_command(f"set playlist-pos {position}") 
-    main.mpv_command(f"show-text '{main.playlist[int(position)]}'") 
+    main.mpv_command(f'show-text \"{main.playlist[int(position)]}\"') 
     main.save_playlist_position(position)      
+    redirect("/start")
+
+@route('/playlist/<key>')
+@view('start')
+def playlist(key=None):       
+    position = int(main.load_playlist_position())
+    if key == "next":
+        playlist_positon = position + 1 if position + 1 < len(main.playlist) else position
+    elif key == "prev":
+        playlist_positon = position - 1 if position - 1 >= 0 else position   
+    else:
+        playlist_positon = position
+    main.mpv_command(f"set playlist-pos {playlist_positon}") 
+    main.mpv_command(f'show-text \"{main.playlist[playlist_positon]}\"')
+    main.save_playlist_position(playlist_positon) 
     redirect("/start")
 
 @route('/control/<key>')
 @view('start')
-def control(key=None):
-    main.mpv_command(main.cmd_map[key])
-    position = main.load_playlist_position()
-    main.mpv_command(f"show-text '{main.playlist[int(position)]}'") 
-    redirect("/start")
+def control(key=None):       
+    main.mpv_command(main.cmd_map[key]) 
+    redirect("/start")    
 
 @route('/window/screen')
 @view('start')

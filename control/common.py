@@ -29,10 +29,10 @@ class BaseMpv():
             exit(1)
 
     def mpv_command(self, mpv_cmd):
-        subprocess.run(f"echo {mpv_cmd} | socat - {self.cfg['GENERAL']['ipc_socket']}", shell=True)
+        subprocess.run(f"echo '{mpv_cmd}' | socat - {self.cfg['GENERAL']['ipc_socket']}", shell=True)
 
     def key_command(self, key_cmd):
-        subprocess.run(["xdotool", "search", "--onlyvisible", "--class", "mpv", "key", key_cmd])
+        subprocess.run(["xdotool", "search", "--onlyvisible", "--class", "mpv", "key", key_cmd])       
 
     def load_playlist(self, selection=None):
         data = open(f"{self.cfg['GENERAL']['install_path']}/playlists/main.m3u")
