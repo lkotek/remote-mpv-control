@@ -23,8 +23,8 @@ def server_static(filename):
 @route('/start')
 @view('start')
 def start(playing=None, position=0):   
-    position = int(main.load_playlist_position())   
-    return template('start', playing=main.playlist[int(position)], playlist=main.playlist)
+    position = main.load_playlist_position()  
+    return template('start', playing=main.playlist[position], playlist=main.playlist)
 
 @route('/play/<position>')
 @view('play')
