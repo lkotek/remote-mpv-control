@@ -2,9 +2,9 @@
 
 WEB_IP="127.0.0.1"
 WEB_PORT=8081
-IPC_SOCKET="/tmp/remote-mpv-control-socket"
-CONFIG_PATH=~"/.remote-mpv-control"
-PLAYLIST_POSITION_PATH="/tmp/remote-mpv-playlist-pos"
+IPC_SOCKET=/tmp/remote-mpv-control-socket
+CONFIG_PATH=~/.remote-mpv-control
+PLAYLIST_POSITION_PATH=/tmp/remote-mpv-playlist-pos
 
 if [ -d $CONFIG_PATH ]; then
     echo

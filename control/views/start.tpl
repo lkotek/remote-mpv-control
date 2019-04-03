@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<h1>Přehrává se:</h1>
+<h1 id="top">Přehrává se:</h1>
 <h2><em>{{playing}}</em></h2>
 
 <div class="cntrl_items">
@@ -36,15 +36,6 @@
 <a target="_blank" class="control" href="/sleep">Uspat</a>
 </div>
 
-<h1>Kategorie:</h1>
-
-<ul>
-    <li><a href="/start/CT">ČT a zpravodajské</a></li>
-    <li><a href="/start/Prima">Prima kanály</a></li>
-    <li><a href="/start/Nova">Nova kanály</a></li>
-    <li><a href="/start">Zobrazit všechny kanály</a></li>    
-</ul>
-
 <h1>Programy:</h1>
 
 <ul>
@@ -56,7 +47,7 @@
 </body>
 
 <div class="cntrl_items">
-<a class="control" href="/ostrava">Ostrava režim</a>
+<a class="control" href="#top">Jdi nahoru</a>
 </div>
 
 </html>

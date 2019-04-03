@@ -10,6 +10,7 @@ CONFIG = os.path.expanduser("~/.remote-mpv-control/config.conf")
 
 class BaseMpv():
     """Class to provide configuration and define methods for common use"""
+
     def __init__(self):
         """Configure default values"""
         self.cfg = None
@@ -22,6 +23,7 @@ class BaseMpv():
             "prev": "playlist-prev",
             "next": "playlist-next"
             }
+
     def read_config(self):
         """Read main configuration file"""
         try:
@@ -30,16 +32,19 @@ class BaseMpv():
         except IOError as error:
             print("Cannot load configuration file: ", error)
             exit(1)
+
     def mpv_command(self, mpv_cmd):
         """Execute mpv command via socket"""
         subprocess.run(
             f"echo '{mpv_cmd}' | socat - {self.cfg['GENERAL']['ipc_socket']}",
             shell=True
             )
+
     @staticmethod
     def key_command(key_cmd):
         """Execute keypress to control mpv"""
-        subprocess.run(["xdotool", "search", "--onlyvisible", "--class", "mpv", "key", key_cmd])
+        subprocess.run(["xdotool", "search", "--onlyvisible", "--class", "mpv", "type", key_cmd])
+
     def load_playlist(self, selection=None):
         """Load playlist data from main playlist file"""
         data = open(f"{self.cfg['GENERAL']['install_path']}/playlists/main.m3u")
@@ -54,6 +59,7 @@ class BaseMpv():
                     if selection in station_name:
                         self.playlist.update({item_number:station_name})
                 item_number += 1
+
     def save_playlist_position(self, pos=0):
         """Save position in current plalist"""
         try:
@@ -61,6 +67,7 @@ class BaseMpv():
         except IOError as error:
             print(error)
             exit(1)
+
     def load_playlist_position(self):
         """Load current playlist position"""
         try:

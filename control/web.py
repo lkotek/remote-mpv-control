@@ -1,64 +1,76 @@
 #!/usr/bin/env python3
 
-from bottle import route, run, template, view, static_file, redirect, SimpleTemplate
 import subprocess
 import common
-import socket
-import sys
+from bottle import route, run, template, view, static_file, redirect
 
 # NEED TO REWRITE COMPLETELY
 
-main = common.BaseMpv()
+PLAYER = common.BaseMpv()
 FULLSCREEN = True
 
 def volume_info():
-    a = "amixer -R | grep 'Front Left: Playback' | cut -d[ -f2 | cut -d] -f1"
-    i = subprocess.Popen(a,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-    return str(i.communicate()[0]).replace("b","").replace("\\n","").replace("%", " %")
+    amixer = "amixer -R | grep 'Front Left: Playback' | cut -d[ -f2 | cut -d] -f1"
+    cmd_output = subprocess.Popen(
+        amixer, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+        )
+    return str(
+        cmd_output.communicate()[0]
+        ).replace("b", "").replace("\\n", "").replace("%", " %")
+
+def is_volume_muted():
+    amixer = "pacmd list-sinks | grep muted | cut -d: -f2"
+    cmd_output = subprocess.Popen(
+        amixer, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+        )
+    if "no" in str(cmd_output.communicate()[0]):
+        return False
+    return True
 
 @route('/views/css/<filename>')
 def server_static(filename):
-    return static_file(filename, root=f"{main.cfg['GENERAL']['install_path']}/control/views/css")
+    return static_file(filename, root=f"{PLAYER.cfg['GENERAL']['install_path']}/control/views/css")
 
 @route('/start')
 @view('start')
-def start(playing=None, position=0):   
-    position = main.load_playlist_position()  
-    return template('start', playing=main.playlist[position], playlist=main.playlist)
+def start(position=0):
+    position = PLAYER.load_playlist_position()
+    return template('start', playing=PLAYER.playlist[position], playlist=PLAYER.playlist)
 
 @route('/play/<position>')
 @view('play')
-def play(playing=None, position=0):     
-    main.mpv_command(f"set playlist-pos {position}") 
-    main.mpv_command(f'show-text \"{main.playlist[int(position)]}\"') 
-    main.save_playlist_position(position)      
+def play(position=0):
+    PLAYER.mpv_command(f"set playlist-pos {position}")
+    PLAYER.mpv_command(f'show-text \"{PLAYER.playlist[int(position)]}\"')
+    PLAYER.save_playlist_position(position)
     redirect("/start")
 
 @route('/playlist/<key>')
 @view('start')
-def playlist(key=None):       
-    position = int(main.load_playlist_position())
+def playlist(key=None):
+    position = int(PLAYER.load_playlist_position())
     if key == "next":
-        playlist_positon = position + 1 if position + 1 < len(main.playlist) else position
+        playlist_positon = position + 1 if position + 1 < len(PLAYER.playlist) else position
+        PLAYER.key_command(">")
     elif key == "prev":
-        playlist_positon = position - 1 if position - 1 >= 0 else position   
+        playlist_positon = position - 1 if position - 1 >= 0 else position
+        PLAYER.key_command("<")
     else:
         playlist_positon = position
-    main.mpv_command(f"set playlist-pos {playlist_positon}") 
-    main.mpv_command(f'show-text \"{main.playlist[playlist_positon]}\"')
-    main.save_playlist_position(playlist_positon) 
+    PLAYER.mpv_command(f'show-text \"{PLAYER.playlist[playlist_positon]}\"')
+    PLAYER.save_playlist_position(playlist_positon)
     redirect("/start")
 
 @route('/control/<key>')
 @view('start')
-def control(key=None):       
-    main.mpv_command(main.cmd_map[key]) 
-    redirect("/start")    
+def control(key=None):
+    PLAYER.mpv_command(PLAYER.cmd_map[key])
+    redirect("/start")
 
 @route('/window/screen')
 @view('start')
-def window(screen=None):
-    main.key_command("f")
+def window():
+    PLAYER.key_command("f")
     redirect("/start")
 
 @route('/volume/<change>')
@@ -70,28 +82,31 @@ def volume(change=None):
         operation = "5%-"
     elif change == "mute":
         operation = "toggle"
-        main.mpv_command(f"show-text Ztlumit")
+        if is_volume_muted():
+            PLAYER.mpv_command(f'show-text  \"Zapnout zvuk\"')
+        else:
+            PLAYER.mpv_command(f'show-text \"Ztlumit zvuk\"')
     else:
         print("Wrong call :-(")
     subprocess.call(["amixer", "-q", "sset", "Master", operation])
     if change != "mute":
-        main.mpv_command(f"show-text {(volume_info())}")
-    redirect("/start") 
+        PLAYER.mpv_command(f'show-text \"Hlasitost: {(volume_info())}\"')
+    redirect("/start")
 
 @route('/poweroff')
-def poweroff(change=None):
+def poweroff():
     subprocess.call(["sudo", "/sbin/shutdown", "-h", "now"])
     redirect("/pause")
 
 @route('/playeroff')
-def playeroff(change=None):
-    subprocess.call([f"{main.cfg['GENERAL']['install_path']}/support/stop.sh"])
+def playeroff():
+    subprocess.call([f"{PLAYER.cfg['GENERAL']['install_path']}/support/stop.sh"])
 
 @route('/sleep')
-def sleep(change=None):
-    main.key_command("p")
+def sleep():
+    PLAYER.key_command("p")
     subprocess.call(["xset", "-display", ":0.0", "dpms", "force", "off"])
     redirect("/start")
 
 if __name__ == "__main__":
-    run(host=main.cfg['WEB']['ip'], port=main.cfg['WEB']['port'])
+    run(host=PLAYER.cfg['WEB']['ip'], port=PLAYER.cfg['WEB']['port'])
