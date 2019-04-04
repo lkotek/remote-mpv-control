@@ -57,7 +57,7 @@ class BaseMpv():
 
     def set_playeroff(self):
         """Turn down player only"""
-        self.run_os_call(f"{self.cfg['GENERAL']['install_path']}/support/stop.sh")
+        self.mpv_command("quit")
 
     def mpv_command(self, mpv_cmd):
         """Execute mpv command via socket"""
@@ -152,9 +152,9 @@ class BaseMpv():
                 self.show_text("Zapnout zvuk")
             else:
                 self.show_text("Ztlumit zvuk")
-            subprocess.call(["pactl", "set-sink-mute", "0", operation])
+            self.run_os_call(["pactl", "set-sink-mute", "0", operation])
         else:
             print("Wrong call :-(")
-        subprocess.call(["pactl", "set-sink-volume", "0", operation])
+        self.run_os_call(["pactl", "set-sink-volume", "0", operation])
         if change != "mute":
             self.show_text(f"Hlasitost: {self.get_volume_info()}")

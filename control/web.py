@@ -54,15 +54,13 @@ def poweroff():
     redirect("/control/pause")
 
 @route('/playeroff')
-def playeroff():
+def playeroff():    
     PLAYER.set_playeroff()
 
 @route('/sleep')
 def sleep():
-    PLAYER.key_command("p")
+    redirect("/control/pause")
     PLAYER.set_sleep()
-    subprocess.call()
-    redirect("/start")
 
 if __name__ == "__main__":
     run(host=PLAYER.cfg['WEB']['ip'], port=PLAYER.cfg['WEB']['port'])
