@@ -8,42 +8,75 @@ import os
 
 CONFIG = os.path.expanduser("~/.remote-mpv-control/config.conf")
 
+def read_config():
+    """Read main configuration file"""
+    try:
+        cfg = configparser.ConfigParser()
+        cfg.read(CONFIG)
+        return cfg
+    except IOError as error:
+        print("Cannot load configuration file: ", error)
+        exit(1)
+
 class BaseMpv():
-    """Class to provide configuration and define methods for common use"""
+    """Class to provide methods for common control of mpv player"""
 
     def __init__(self):
         """Configure default values"""
-        self.cfg = None
+        self.cfg = read_config()
         self.playlist = None
-        self.read_config()
         self.load_playlist()
         self.save_playlist_position()
         self.cmd_map = {
             "pause": "cycle pause",
             "prev": "playlist-prev",
-            "next": "playlist-next"
+            "next": "playlist-next",
+            "screen": "cycle fullscreen"
             }
 
-    def read_config(self):
-        """Read main configuration file"""
-        try:
-            self.cfg = configparser.ConfigParser()
-            self.cfg.read(CONFIG)
-        except IOError as error:
-            print("Cannot load configuration file: ", error)
-            exit(1)
+    @classmethod
+    def run_os_call(cls, command):
+        """Wrapper of subprocess call"""
+        subprocess.call(command)
+
+    @classmethod
+    def run_os_popen(cls, command):
+        """Wrapper of popen cathing the output"""
+        cmd_output = subprocess.Popen(
+            command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            )
+        return str(cmd_output.communicate()[0])
+
+    def set_sleep(self):
+        """Pause playback and power off display"""
+        self.run_os_call("xset -display :0.0 dpms force off")
+
+    def set_poweroff(self):
+        """Turn down whole system"""
+        self.run_os_call("sudo /sbin/shutdown -h now")
+
+    def set_playeroff(self):
+        """Turn down player only"""
+        self.run_os_call(f"{self.cfg['GENERAL']['install_path']}/support/stop.sh")
 
     def mpv_command(self, mpv_cmd):
         """Execute mpv command via socket"""
-        subprocess.run(
+        subprocess.call(
             f"echo '{mpv_cmd}' | socat - {self.cfg['GENERAL']['ipc_socket']}",
             shell=True
             )
 
-    @staticmethod
-    def key_command(key_cmd):
+    def mpv_execute(self, key):
+        """Execute mpv command by allowed key"""
+        self.mpv_command(self.cmd_map[key])
+
+    def show_text(self, text):
+        """Show text to mpv screen"""
+        self.mpv_command(f'show-text \"{text}\"')
+
+    def key_command(self, key_cmd):
         """Execute keypress to control mpv"""
-        subprocess.run(["xdotool", "search", "--onlyvisible", "--class", "mpv", "type", key_cmd])
+        self.run_os_call(f"xdotool search --onlyvisible --class mpv key {key_cmd}")
 
     def load_playlist(self, selection=None):
         """Load playlist data from main playlist file"""
@@ -75,3 +108,53 @@ class BaseMpv():
         except IOError as error:
             print(error)
             exit(1)
+
+    def switch_playlist_item(self, item):
+        """Switch between items in playlist"""
+        position = int(self.load_playlist_position())
+        if item == "next":
+            playlist_positon = position + 1 if position + 1 < len(self.playlist) else position
+        elif item == "prev":
+            playlist_positon = position - 1 if position - 1 >= 0 else position
+        else:
+            playlist_positon = position
+        self.mpv_execute(item)
+        self.show_text(self.playlist[playlist_positon])
+        self.save_playlist_position(playlist_positon)
+
+    def set_playlist_position(self, pos):
+        """Set playlist position by number of item"""
+        self.mpv_command(f"set playlist-pos {pos}")
+        self.show_text(self.playlist[int(pos)])
+        self.save_playlist_position(pos)
+
+    def is_volume_muted(self):
+        """Check if sink is muted"""
+        volume = "pacmd list-sinks | grep muted | cut -d: -f2"
+        if "no" in self.run_os_popen(volume):
+            return False
+        return True
+
+    def get_volume_info(self):
+        """Realy not necessary to describe"""
+        amixer = "amixer -R | grep 'Front Left: Playback' | cut -d[ -f2 | cut -d] -f1"
+        return self.run_os_popen(amixer).replace("b", "").replace("\\n", "").replace("%", " %")
+
+    def change_volume(self, change):
+        """Change volume level via pactl"""
+        if change == "up":
+            operation = "+5%"
+        elif change == "down":
+            operation = "-5%"
+        elif change == "mute":
+            operation = "toggle"
+            if self.is_volume_muted():
+                self.show_text("Zapnout zvuk")
+            else:
+                self.show_text("Ztlumit zvuk")
+            subprocess.call(["pactl", "set-sink-mute", "0", operation])
+        else:
+            print("Wrong call :-(")
+        subprocess.call(["pactl", "set-sink-volume", "0", operation])
+        if change != "mute":
+            self.show_text(f"Hlasitost: {self.get_volume_info()}")

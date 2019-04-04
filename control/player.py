@@ -2,11 +2,11 @@
 
 """Init mpv player script"""
 
+import os
 import subprocess
-import common
 import atexit
 import socket
-import os
+import common
 
 def create_ipc_socket(sock):
     """Socket creation to control player"""
@@ -22,15 +22,15 @@ def close_ui(webui, bluetooth):
     webui.kill()
     bluetooth.kill()
 
-if __name__ == "__main__":    
-    main = common.BaseMpv()
-    create_ipc_socket(main.cfg["GENERAL"]["ipc_socket"])
-    WEBUI = subprocess.Popen([f"{main.cfg['GENERAL']['install_path']}/control/web.py"])
-    BLUE = subprocess.Popen([f"{main.cfg['GENERAL']['install_path']}/control/bluetooth.py"])
+if __name__ == "__main__":
+    CONFIG = common.read_config()
+    create_ipc_socket(CONFIG["GENERAL"]["ipc_socket"])
+    WEBUI = subprocess.Popen([f"{CONFIG['GENERAL']['install_path']}/control/web.py"])
+    BLUE = subprocess.Popen([f"{CONFIG['GENERAL']['install_path']}/control/bluetooth.py"])
     subprocess.call([
         "mpv",
-        f"--input-ipc-server={main.cfg['GENERAL']['ipc_socket']}",
+        f"--input-ipc-server={CONFIG['GENERAL']['ipc_socket']}",
         "--playlist",
-        f"{main.cfg['GENERAL']['install_path']}/playlists/main.m3u"
+        f"{CONFIG['GENERAL']['install_path']}/playlists/main.m3u"
         ])
-    atexit.register(close_ui, webui=WEBUI, bluetooth=BLUE)        
+    atexit.register(close_ui, webui=WEBUI, bluetooth=BLUE)
