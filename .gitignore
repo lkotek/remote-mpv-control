@@ -104,3 +104,9 @@ venv.bak/
 .mypy_cache/
 
 playlists/main.m3u
+playlists/playlist-allowed-keys.txt
+playlists/playlist-sledovanitv.m3u
+playlists/playlist-zapnitv.m3u
+playlists/sledovanitv-playlist.m3u
+playlists/zapnitv.cookie
+playlists/zapnitv-playlist.m3u

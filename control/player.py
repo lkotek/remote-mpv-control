@@ -25,8 +25,13 @@ def close_ui(webui, bluetooth):
 if __name__ == "__main__":
     CONFIG = common.read_config()
     create_ipc_socket(CONFIG["GENERAL"]["ipc_socket"])
-    WEBUI = subprocess.Popen([f"{CONFIG['GENERAL']['install_path']}/control/web.py"])
-    BLUE = subprocess.Popen([f"{CONFIG['GENERAL']['install_path']}/control/bluetooth.py"])
+    # Optional - generate main (main.m3u) playlist if this option is present in configuration file
+    if "PLAYLIST" in CONFIG:
+        subprocess.call(f"{CONFIG['GENERAL']['install_path']}/control/playlists.py")
+    # Run web based and bluetooth based interface
+    WEBUI = subprocess.Popen(f"{CONFIG['GENERAL']['install_path']}/control/web.py")
+    BLUE = subprocess.Popen(f"{CONFIG['GENERAL']['install_path']}/control/bluetooth.py")
+    # Run main mpv aplication
     subprocess.call([
         "mpv",
         f"--input-ipc-server={CONFIG['GENERAL']['ipc_socket']}",
