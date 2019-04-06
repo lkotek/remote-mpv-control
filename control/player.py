@@ -37,6 +37,10 @@ if __name__ == "__main__":
         "mpv",
         f"--input-ipc-server={CONFIG['GENERAL']['ipc_socket']}",
         "--fullscreen=yes",
+        "--no-cache",
+        "--untimed",
+        "--no-demuxer-thread",
+        "--video-sync=audio",
         "--playlist",
         f"{CONFIG['GENERAL']['install_path']}/playlists/main.m3u"
         ])
