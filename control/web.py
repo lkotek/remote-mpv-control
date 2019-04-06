@@ -4,7 +4,7 @@
 
 import os
 import common
-from bottle import route, run, template, view, static_file, redirect
+from bottle import route, run, template, view, static_file, redirect, TEMPLATE_PATH
 
 @route('/views/css/<filename>')
 def server_static(filename):
@@ -72,5 +72,6 @@ def sleep():
 
 if __name__ == "__main__":
     PLAYER = common.BaseMpv()
-    os.chdir(PLAYER.cfg['GENERAL']['install_path'])
+    #global TEMPLATE_PATH
+    #TEMPLATE_PATH.insert(0, f"{PLAYER.cfg['GENERAL']['install_path']}/views")
     run(host=PLAYER.cfg['WEB']['ip'], port=PLAYER.cfg['WEB']['port'])

@@ -24,7 +24,7 @@ def close_ui(webui, bluetooth):
 
 if __name__ == "__main__":
     CONFIG = common.read_config()
-    os.chdir(CONFIG['GENERAL']['install_path'])
+    os.chdir(f"{CONFIG['GENERAL']['install_path']}/control")
     create_ipc_socket(CONFIG["GENERAL"]["ipc_socket"])
     # Optional - generate main (main.m3u) playlist if this option is present in configuration file
     if "PLAYLIST" in CONFIG:
