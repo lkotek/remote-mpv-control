@@ -47,7 +47,7 @@
 </body>
 
 <div class="cntrl_items">
-<a class="control" href="#top">Jdi nahoru</a>
+<a id="btn_full" href="#top">Jdi nahoru</a>
 </div>
 
 </html>

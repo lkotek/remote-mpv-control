@@ -68,8 +68,8 @@ def playeroff():
 @route('/sleep')
 def sleep():
     """Pause player and put screen to sleep"""
-    redirect("/control/pause")
     PLAYER.set_sleep()
+    redirect("/control/pause")    
 
 if __name__ == "__main__":
     PLAYER = common.BaseMpv()

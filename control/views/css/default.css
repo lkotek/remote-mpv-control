@@ -158,7 +158,6 @@ a.control{
     padding: 2%;
     display: block;
     float: left;
-
 }
 
 .cntrl_items{
@@ -189,4 +188,13 @@ a.control{
     width: 43%;
     background-color: red;
     color: white;
+}
+
+#btn_full{
+    border: 2px solid #111111;
+    font-size: 16pt;
+    margin-right: 1.5%;
+    margin-bottom: 1.5%;
+    border-radius: 5px;
+    padding: 2%;
 }
