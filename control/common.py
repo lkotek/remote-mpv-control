@@ -51,7 +51,7 @@ class BaseMpv():
 
     def set_sleep(self):
         """Pause playback and power off display"""
-        self.run_os_popen("xset -display :0.0 dpms force off")
+        self.run_os_popen("xset -display :$(w | grep gdm-x-session | cut -d: -f2) dpms force off")
 
     def set_poweroff(self):
         """Turn down whole system"""
