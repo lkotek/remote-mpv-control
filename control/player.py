@@ -37,7 +37,7 @@ if __name__ == "__main__":
         "mpv",
         f"--input-ipc-server={CONFIG['GENERAL']['ipc_socket']}",
         "--ytdl=no", # Necessary to improve swtich time between playlist items
-        "--fullscreen=yes",
+        "--fullscreen",
         "--playlist",
         f"{CONFIG['GENERAL']['install_path']}/playlists/main.m3u"
         ])
