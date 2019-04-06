@@ -27,7 +27,7 @@
 </div>
 
 <div class="cntrl_items">
-<a target="_blank" class="control" href="http://www.tvprogram.cz/">TV Program</a>
+<a target="_blank" class="control" href="https://tv.seznam.cz/">TV Program</a>
 <a id ="danger" class="control" onclick="return confirm('Určitě chcete centrum vypnout?')" href="/poweroff">Vypnout</a>
 </div>
 
