@@ -56,7 +56,7 @@ class BaseMpv():
 
     def set_poweroff(self):
         """Turn down whole system"""
-        self.run_os_call("sudo /sbin/shutdown -h now")
+        self.run_os_popen("sudo /sbin/shutdown -h now")
 
     def set_playeroff(self):
         """Turn down player only"""
