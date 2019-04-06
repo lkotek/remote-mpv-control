@@ -72,6 +72,4 @@ def sleep():
 
 if __name__ == "__main__":
     PLAYER = common.BaseMpv()
-    #global TEMPLATE_PATH
-    #TEMPLATE_PATH.insert(0, f"{PLAYER.cfg['GENERAL']['install_path']}/views")
     run(host=PLAYER.cfg['WEB']['ip'], port=PLAYER.cfg['WEB']['port'])

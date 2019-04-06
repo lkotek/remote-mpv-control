@@ -135,7 +135,7 @@ class BaseMpv():
 
     def is_volume_muted(self):
         """Check if sink is muted"""
-        volume = "pacmd list-sinks | grep muted | cut -d: -f2"
+        volume = "pacmd list-sinks | grep muted | head -1 | cut -d: -f2"
         if "no" in self.run_os_popen(volume):
             return False
         return True
