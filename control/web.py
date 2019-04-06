@@ -63,6 +63,7 @@ def poweroff():
 def playeroff():
     """Close mpv player only"""
     PLAYER.set_playeroff()
+    exit(0)
 
 @route('/sleep')
 def sleep():
