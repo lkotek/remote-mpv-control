@@ -34,7 +34,6 @@ class BaseMpv():
             "screen": "cycle fullscreen"
             }
         # Set fullscreen and default volume at startup
-        self.mpv_execute("screen")
         self.change_volume("default")        
 
     @classmethod
