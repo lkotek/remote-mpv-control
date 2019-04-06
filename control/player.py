@@ -35,6 +35,7 @@ if __name__ == "__main__":
     subprocess.call([
         "mpv",
         f"--input-ipc-server={CONFIG['GENERAL']['ipc_socket']}",
+        "--fullscreen=yes",
         "--playlist",
         f"{CONFIG['GENERAL']['install_path']}/playlists/main.m3u"
         ])
