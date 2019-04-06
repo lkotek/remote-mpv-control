@@ -2,6 +2,7 @@
 
 """"Script providing functionality to control mpv player via web UI"""
 
+import os
 import common
 from bottle import route, run, template, view, static_file, redirect
 
@@ -71,4 +72,5 @@ def sleep():
 
 if __name__ == "__main__":
     PLAYER = common.BaseMpv()
+    os.chdir(PLAYER.cfg['GENERAL']['install_path'])
     run(host=PLAYER.cfg['WEB']['ip'], port=PLAYER.cfg['WEB']['port'])
