@@ -81,7 +81,7 @@ class BaseMpv():
 
     def key_command(self, key_cmd):
         """Execute keypress to control mpv"""
-        self.run_os_call(f"xdotool search --onlyvisible --class mpv key {key_cmd}")
+        self.run_os_popen(f"xdotool search --onlyvisible --class mpv type {key_cmd}")
 
     def load_playlist(self, selection=None):
         """Load playlist data from main playlist file"""

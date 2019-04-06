@@ -14,26 +14,26 @@
 <h2><em>{{playing}}</em></h2>
 
 <div class="cntrl_items">
-<a class="control" href="/volume/down">Zvuk &minus;</a>
-<a class="control" href="/volume/mute">Ztlumit</a>
-<a class="control" href="/volume/up">Zvuk &#43;</a>
+<a id="btn01" class="control" href="/volume/down">Zvuk &minus;</a>
+<a id="btn02" class="control" href="/volume/mute">Ztlumit</a>
+<a id="btn03" class="control" href="/volume/up">Zvuk &#43;</a>
 </div>
 
 <div class="cntrl_items">
-<a class="control" href="/window/screen">Okno</a>
-<a class="control" href="/playlist/prev">&nbsp;&lt;&lt;&nbsp;</a>
-<a class="control" href="/control/pause">&nbsp;|| &gt;&nbsp;</a>
-<a class="control" href="/playlist/next">&nbsp;&gt;&gt;&nbsp;</a>
+<a id="btn04" class="control" href="/window/screen">Okno</a>
+<a id="btn05" class="control" href="/playlist/prev">&nbsp;&lt;&lt;&nbsp;</a>
+<a id="btn06" class="control" href="/control/pause">&nbsp;|| &gt;&nbsp;</a>
+<a id="btn07" class="control" href="/playlist/next">&nbsp;&gt;&gt;&nbsp;</a>
 </div>
 
 <div class="cntrl_items">
-<a target="_blank" class="control" href="https://tv.seznam.cz/">TV Program</a>
-<a id ="danger" class="control" onclick="return confirm('Určitě chcete centrum vypnout?')" href="/poweroff">Vypnout</a>
+<a id="btn08" target="_blank" class="control" href="https://tv.seznam.cz/">TV Program</a>
+<a id="btn09" class="control" onclick="return confirm('Určitě chcete centrum vypnout?')" href="/poweroff">Vypnout</a>
 </div>
 
 <div class="cntrl_items">
-<a target="_blank" class="control" href="/playeroff">Zavřít</a>
-<a target="_blank" class="control" href="/sleep">Uspat</a>
+<a id="btn10" target="_blank" class="control" href="/playeroff">Zavřít</a>
+<a id="btn11" target="_blank" class="control" href="/sleep">Uspat</a>
 </div>
 
 <h1>Programy:</h1>
