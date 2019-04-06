@@ -33,6 +33,9 @@ class BaseMpv():
             "next": "playlist-next",
             "screen": "cycle fullscreen"
             }
+        # Set fullscreen and default volume at startup
+        self.mpv_execute("screen")
+        self.change_volume("default")        
 
     @classmethod
     def run_os_call(cls, command):
@@ -146,6 +149,8 @@ class BaseMpv():
             operation = "+5%"
         elif change == "down":
             operation = "-5%"
+        elif change == "default":
+            operation = "40%"
         elif change == "mute":
             operation = "toggle"
             if self.is_volume_muted():
