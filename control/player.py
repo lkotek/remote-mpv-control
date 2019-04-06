@@ -36,6 +36,7 @@ if __name__ == "__main__":
     subprocess.call([
         "mpv",
         f"--input-ipc-server={CONFIG['GENERAL']['ipc_socket']}",
+        "--fullscreen=yes",
         "--ytdl=no",
         "--no-demuxer-thread",
         "--video-sync=audio",
