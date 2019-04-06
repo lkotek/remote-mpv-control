@@ -55,10 +55,14 @@ def save_playlist(playlist_prefix, playlist):
 
 def save_allowed_playlists_keys(playlist_list):
     """Save allowed keys for playlist dict items to file"""
+    try:
+        open(ALLOWED_KEYS, "w").close()
+    except IOError as error:
+        print("Cannot empty allowed keys file: ", error)
+        exit(1)
     for playlist in playlist_list:
         try:
-            with open(ALLOWED_KEYS, "w") as file:
-                file.write("#EXTM3U\n")
+            with open(ALLOWED_KEYS, "a") as file:
                 for key in playlist:
                     file.write(f"{key}\n")
         except IOError as error:

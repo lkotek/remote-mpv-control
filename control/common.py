@@ -71,6 +71,8 @@ class BaseMpv():
 
     def mpv_execute(self, key):
         """Execute mpv command by allowed key"""
+        if key == "pause":
+            self.show_text("Pauza / přehrát")
         self.mpv_command(self.cmd_map[key])
 
     def show_text(self, text):
