@@ -69,7 +69,6 @@ def create_playlist_from_keys(keys_file, playlist_save_file, playlist_dict):
     """Create m3u playlist file based on playlist dict with allowed keys"""
     try:
         keys = [k.strip() for k in open(keys_file, 'r').readlines()]
-        print(keys)
     except IOError as error:
         print("Cannot open keys file: ", error)
         exit(1)
