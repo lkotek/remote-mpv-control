@@ -32,7 +32,7 @@ class BaseMpv():
             "prev": "playlist-prev",
             "next": "playlist-next",
             "screen": "cycle fullscreen",
-            "aspect": "cycle video-aspect"
+            "aspect": "cycle-values video-aspect 16:9 4:3 2.35:1 -1"
             }
         # Set fullscreen and default volume at startup
         self.change_volume("default")        
@@ -73,8 +73,6 @@ class BaseMpv():
         """Execute mpv command by allowed key"""
         if key == "pause":
             self.show_text("Pauza / přehrát")
-        elif key == "aspect":
-            self.show_text("Měním poměr stran")
         self.mpv_command(self.cmd_map[key])
 
     def show_text(self, text):
