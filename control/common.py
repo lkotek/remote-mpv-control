@@ -32,7 +32,7 @@ class BaseMpv():
             "prev": "playlist-prev",
             "next": "playlist-next",
             "screen": "cycle fullscreen",
-            "aspect": "video-aspect"
+            "aspect": "cycle video-aspect"
             }
         # Set fullscreen and default volume at startup
         self.change_volume("default")        
