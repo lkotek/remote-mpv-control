@@ -45,6 +45,13 @@ def window():
     """Toggle between fulscreen and window"""
     PLAYER.mpv_execute("screen")
     redirect("/start")
+    
+@route('/window/aspect')
+@view('start')
+def aspect():
+    """Toggle between different aspect ratio settings"""
+    PLAYER.mpv_execute("aspect")
+    redirect("/start")
 
 @route('/volume/<change>')
 @view('start')

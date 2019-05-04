@@ -120,6 +120,29 @@ footer{
     text-align: center;
 }
 
+table{
+    width: 100%;
+    margin-bottom: 4%;
+}
+
+table a{
+    display: block;
+    border: 2px solid #111111;
+    font-size: 16pt;
+    margin-right: 1.5%;
+    margin-bottom: 1.5%;
+    border-radius: 5px;
+    padding: 6%;    
+}
+
+tr{
+    width: 100%;
+}
+
+td{
+    width: 33%;
+}
+
 a:link, a:active, a:visited{
 	color: #111111;
     text-decoration: none;
@@ -149,18 +172,8 @@ li a{
     display: block;
 }
 
-a.control{
-    border: 2px solid #111111;
-    font-size: 16pt;
-    margin-right: 1.5%;
-    margin-bottom: 1.5%;
-    border-radius: 5px;
-    padding: 2%;
-    display: block;
-    float: left;
-}
-
 .cntrl_items{
+    width: 100%;
     padding: 0;
     display: block;
     clear: both;
@@ -168,24 +181,7 @@ a.control{
     margin-bottom: 6.5%;
 }
 
-#btn01,#btn03{
-    width: 26%;
-}
-
-#btn02{
-    width: 27%;
-}
-
-#btn04, #btn05, #btn06, #btn07{
-    width: 18.25%;
-}
-
-#btn08, #btn10, #btn11{
-    width: 43%;
-}
-
-#btn09{
-    width: 43%;
+#poweroff{
     background-color: red;
     color: white;
 }
