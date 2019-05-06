@@ -16,7 +16,20 @@ def server_static(filename):
 def start(position=0):
     """Main page of web UI with playlist loaded"""
     position = PLAYER.load_playlist_position()
-    return template('start', playing=PLAYER.playlist[position], playlist=PLAYER.playlist)
+    player_mode = PLAYER.load_current_mode()
+    return template(
+        'start', 
+        playing=PLAYER.playlist[position], 
+        playlist=PLAYER.playlist, 
+        mode=player_mode
+        )
+
+@route('/mode/<mode>')
+@view('start')
+def player_mode(mode="iptv"):
+    """Toggle between IPTV, video and audio modes"""
+    PLAYER.save_current_mode(mode)
+    redirect("/start")        
 
 @route('/play/<position>')
 @view('play')

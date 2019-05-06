@@ -27,6 +27,7 @@ class BaseMpv():
         self.playlist = None
         self.load_playlist()
         self.save_playlist_position()
+        self.save_current_mode()
         self.cmd_map = {
             "pause": "cycle pause",
             "prev": "playlist-prev",
@@ -49,6 +50,22 @@ class BaseMpv():
             command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
             )
         return str(cmd_output.communicate()[0])
+
+    def save_current_mode(self, mode="iptv"):
+        """Save current configuration"""
+        try:
+            open(self.cfg['GENERAL']['current_mode'], "w").write(mode)
+        except IOError as error:
+            print(error)
+            exit(1)
+
+    def load_current_mode(self):
+        """Load current configuration"""
+        try:
+            return open(self.cfg['GENERAL']['current_mode'], "r").read()
+        except IOError as error:
+            print(error)
+            exit(1)        
 
     def set_sleep(self):
         """Pause playback and power off display"""

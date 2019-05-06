@@ -34,9 +34,22 @@
   <td><a target="_blank" href="/sleep">Uspat</a></td>
   <td><a id="poweroff" onclick="return confirm('Určitě chcete centrum vypnout?')" href="/poweroff">Vypnout</a></td>
 </tr>
+<tr>
+  <td><a href="/mode/iptv">IPTV</a></td>
+  <td><a href="/mode/video">Videa</a></td>
+  <td><a href="/mode/audio">Audio</a></td>  
+</tr>
 </table>
 
+% if mode == "iptv":
 <h1>Programy:</h1>
+% end
+% if mode == "video":
+<h1>Videa:</h1>
+% end
+% if mode == "audio":
+<h1>Skladby:</h1>
+% end
 
 <ul>
   % for item in playlist:
