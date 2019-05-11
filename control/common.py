@@ -42,7 +42,7 @@ class BaseMpv():
             "prev": "playlist-prev",
             "next": "playlist-next",
             "screen": "cycle fullscreen",
-            "aspect": "cycle-values video-aspect 16:9 4:3 2.35:1 -1"          
+            "aspect": "cycle-values video-aspect 16:9 4:3 2.35:1 -1"
             }
         # Set fullscreen and default volume at startup
         self.change_volume("default")
@@ -153,6 +153,9 @@ class BaseMpv():
         self.show_text(self.playlist[playlist_positon])
         self.save_playlist_position(playlist_positon)
 
+    def load_main_playlist(self):
+        self.mpv_command(f"loadlist \"{self.cfg['GENERAL']['main_playlist_path']}\"")
+
     def set_playlist_position(self, pos):
         """Set playlist position by number of item"""
         self.mpv_command(f"set playlist-pos {pos}")
@@ -201,7 +204,7 @@ class BaseMpv():
                     f"dir-{counter}":[
                         f"{video_dir}/{directory}",
                         directory
-                    ]                    
+                    ]
                 })
         tmp_dirs.update({
             "dir-main":[
@@ -244,7 +247,6 @@ class BaseMpv():
         self.subtitles = temp_sub
 
     def open_video(self, video_file):
-        print(video_file)
         self.mpv_command(f"loadfile \"{video_file}\"")
 
     def seek_video(self, direction):
@@ -253,14 +255,14 @@ class BaseMpv():
             self.show_text("Posouvám vpřed")
         else:
             self.mpv_command("seek -15")
-            self.show_text("Posouvám vzad")        
+            self.show_text("Posouvám vzad")
 
     def open_subtitle(self, subtitle_file):
-        self.mpv_command(f"sub-add \"{subtitle_file}\"")        
+        self.mpv_command(f"sub-add \"{subtitle_file}\"")
 
     def delay_subtitle(self, direction):
         if direction == "forward":
             self.key_command("z")
         else:
-            self.key_command("Z")     
+            self.key_command("Z")
 
