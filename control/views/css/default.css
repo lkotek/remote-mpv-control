@@ -98,6 +98,7 @@ ul li{
     border-radius: 5px;
     line-height: 165%;
     font-size: 16pt;
+    word-wrap: break-word;    
 }
 
 ol li{
@@ -163,6 +164,19 @@ h2 a:hover{
 	text-decoration: underline;
 }
 
+a.mode_selection:hover{
+	color: #111111;
+    background-color: #ffffff;
+	text-decoration: none;
+}
+
+a.mode_selection:link, a.mode_selection:active, a.mode_selection:visited{
+	color: #ffffff;
+    background-color: #111111;
+    text-decoration: none;
+    font-weight: bold;
+}
+
 .strike{
     text-decoration: line-through;
 }
@@ -193,4 +207,8 @@ li a{
     margin-bottom: 1.5%;
     border-radius: 5px;
     padding: 2%;
+}
+
+.selected_media{
+    word-wrap: break-word;      
 }

@@ -110,4 +110,5 @@ playlists/playlist-zapnitv.m3u
 playlists/sledovanitv-playlist.m3u
 playlists/zapnitv.cookie
 playlists/zapnitv-playlist.m3u
-control/Pipfile
+Pipfile
+Pipfile.lock

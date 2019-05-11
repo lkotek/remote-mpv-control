@@ -28,15 +28,24 @@ class BaseMpv():
         self.load_playlist()
         self.save_playlist_position()
         self.save_current_mode()
+        self.videos = {}
+        self.subtitles = {}
+        self.video = None
+        self.subtitle = None
+        self.video_dir = [
+            self.cfg["GENERAL"]["video_directory"],
+            ".."
+            ]
+        self.video_dirs = {}
         self.cmd_map = {
             "pause": "cycle pause",
             "prev": "playlist-prev",
             "next": "playlist-next",
             "screen": "cycle fullscreen",
-            "aspect": "cycle-values video-aspect 16:9 4:3 2.35:1 -1"
+            "aspect": "cycle-values video-aspect 16:9 4:3 2.35:1 -1"          
             }
         # Set fullscreen and default volume at startup
-        self.change_volume("default")        
+        self.change_volume("default")
 
     @classmethod
     def run_os_call(cls, command):
@@ -65,7 +74,7 @@ class BaseMpv():
             return open(self.cfg['GENERAL']['current_mode'], "r").read()
         except IOError as error:
             print(error)
-            exit(1)        
+            exit(1)
 
     def set_sleep(self):
         """Pause playback and power off display"""
@@ -182,3 +191,76 @@ class BaseMpv():
         self.run_os_call(["pactl", "set-sink-volume", "0", operation])
         if change != "mute":
             self.show_text(f"Hlasitost: {self.get_volume_info()}")
+
+    def load_video_directories(self):
+        video_dir = os.path.expanduser(self.video_dir[0])
+        tmp_dirs = {}
+        for counter, directory in enumerate(os.listdir(video_dir)):
+            if os.path.isdir(f"{video_dir}/{directory}"):
+                tmp_dirs.update({
+                    f"dir-{counter}":[
+                        f"{video_dir}/{directory}",
+                        directory
+                    ]                    
+                })
+        tmp_dirs.update({
+            "dir-main":[
+                self.cfg["GENERAL"]["video_directory"],
+                ".."
+            ]
+            })
+        self.video_dirs = tmp_dirs
+
+    def load_video_files(self):
+        """List video files in multimedia directory"""
+        video_dir = os.path.expanduser(self.video_dir[0])
+        allowed_extensions = [".mkv", ".avi", ".mp4", ".ogg", ".ogv", ".mpg", ".mpeg"]
+        temp_videos = {}
+        for counter, video_file in enumerate(os.listdir(video_dir)):
+            for extension in allowed_extensions:
+                if extension in video_file.lower():
+                    temp_videos.update({
+                        f"video-{counter}":[
+                            f"{video_dir}/{video_file}",
+                            video_file
+                        ]
+                    })
+        self.videos = temp_videos
+
+    def load_subtitle_files(self):
+        """List subtitle files in multimedia directory"""
+        sub_dir = os.path.expanduser(self.video_dir[0])
+        allowed_extensions = [".srt", ".sub"]
+        temp_sub = {}
+        for counter, sub_file in enumerate(os.listdir(sub_dir)):
+            for extension in allowed_extensions:
+                if extension in sub_file.lower():
+                    temp_sub.update({
+                        f"subtitle-{counter}":[
+                            f"{sub_dir}/{sub_file}",
+                            sub_file
+                        ]
+                    })
+        self.subtitles = temp_sub
+
+    def open_video(self, video_file):
+        print(video_file)
+        self.mpv_command(f"loadfile \"{video_file}\"")
+
+    def seek_video(self, direction):
+        if direction == "forward":
+            self.mpv_command("seek +15")
+            self.show_text("Posouvám vpřed")
+        else:
+            self.mpv_command("seek -15")
+            self.show_text("Posouvám vzad")        
+
+    def open_subtitle(self, subtitle_file):
+        self.mpv_command(f"sub-add \"{subtitle_file}\"")        
+
+    def delay_subtitle(self, direction):
+        if direction == "forward":
+            self.key_command("z")
+        else:
+            self.key_command("Z")     
+

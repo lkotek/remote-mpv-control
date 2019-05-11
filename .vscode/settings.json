@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/usr/bin/python3"
+    "python.pythonPath": "/home/lukas/.local/share/virtualenvs/remote-mpv-control-4M36y-4e/bin/python",
+    "python.venvPath": "/home/lukas/.local/share/virtualenvs"
 }

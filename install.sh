@@ -4,6 +4,8 @@ IPC_SOCKET=/tmp/remote-mpv-control.sock
 CONFIG_PATH=~/.remote-mpv-control
 PLAYLIST_POSITION_PATH=/tmp/remote-mpv-playlist-pos
 CURRENT_MODE=/tmp/remote-mpv-current-mode
+VIDEO_DIRECTORY=~/downloads
+SUBTITLE_CODEPAGE=cp1250
 
 if [ -d $CONFIG_PATH ]; then
     echo
@@ -26,6 +28,8 @@ ipc_socket=${IPC_SOCKET}
 playlist_position_path=${PLAYLIST_POSITION_PATH}
 current_mode=${CURRENT_MODE}
 main_playlist_path=${PWD}/playlists/main.m3u
+video_directory=${VIDEO_DIRECTORY}
+subtitle_codepage=${SUBTITLE_CODEPAGE}
 
 [WEB]
 
