@@ -58,7 +58,7 @@
 <tr>
   <td><a class="{{iptv_selection}}" href="/mode/iptv">IPTV</a></td>
   <td><a class="{{video_selection}}" href="/mode/video">Videa</a></td>
-  <td><a class="{{audio_selection}}" href="/mode/audio">Audio</a></td>
+  <td><a class="{{audio_selection}}" href="#<!-- /mode/audio -->">Audio</a></td>
 </tr>
 </table>
 
