@@ -21,7 +21,7 @@ def start(position=0):
             'start',
             playing=PLAYER.playlist[position],
             player=PLAYER,
-            mode=player_mode
+            mode=mode
             )
     elif mode == "video":
         PLAYER.load_video_files()
@@ -39,9 +39,9 @@ def start(position=0):
 @view('start')
 def player_mode(mode="iptv"):
     """Toggle between IPTV, video and audio modes"""
+    PLAYER.save_current_mode(mode)
     if mode == "iptv":
         PLAYER.load_main_playlist()
-    PLAYER.save_current_mode(mode)
     redirect("/start")
 
 @route('/play/<position>')
