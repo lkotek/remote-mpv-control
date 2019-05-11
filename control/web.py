@@ -42,6 +42,8 @@ def player_mode(mode="iptv"):
     PLAYER.save_current_mode(mode)
     if mode == "iptv":
         PLAYER.load_main_playlist()
+        PLAYER.video = None
+        PLAYER.subtitle = None
     redirect("/start")
 
 @route('/play/<position>')

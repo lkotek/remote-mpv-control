@@ -125,7 +125,7 @@ class BaseMpv():
                 item_number += 1
 
     def save_playlist_position(self, pos=0):
-        """Save position in current plalist"""
+        """Save position in current playlist"""
         try:
             open(self.cfg['GENERAL']['playlist_position_path'], "w").write(str(pos))
         except IOError as error:
