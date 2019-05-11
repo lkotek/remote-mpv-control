@@ -154,6 +154,7 @@ class BaseMpv():
         self.save_playlist_position(playlist_positon)
 
     def load_main_playlist(self):
+        """Load main playlist file for IPTV"""
         self.mpv_command(f"loadlist \"{self.cfg['GENERAL']['main_playlist_path']}\"")
 
     def set_playlist_position(self, pos):
@@ -196,6 +197,7 @@ class BaseMpv():
             self.show_text(f"Hlasitost: {self.get_volume_info()}")
 
     def load_video_directories(self):
+        """Load available directiories with video files"""
         video_dir = os.path.expanduser(self.video_dir[0])
         tmp_dirs = {}
         for counter, directory in enumerate(os.listdir(video_dir)):
@@ -247,9 +249,11 @@ class BaseMpv():
         self.subtitles = temp_sub
 
     def open_video(self, video_file):
+        """Open single video file"""
         self.mpv_command(f"loadfile \"{video_file}\"")
 
     def seek_video(self, direction):
+        """Jump in video file"""
         if direction == "forward":
             self.mpv_command("seek +15")
             self.show_text("Posouvám vpřed")
@@ -258,11 +262,12 @@ class BaseMpv():
             self.show_text("Posouvám vzad")
 
     def open_subtitle(self, subtitle_file):
+        """Open file with subtitles for video"""
         self.mpv_command(f"sub-add \"{subtitle_file}\"")
 
     def delay_subtitle(self, direction):
+        """Subtitle delay to match timing with video"""
         if direction == "forward":
             self.key_command("z")
         else:
             self.key_command("Z")
-

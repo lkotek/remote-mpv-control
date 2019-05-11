@@ -2,9 +2,8 @@
 
 """"Script providing functionality to control mpv player via web UI"""
 
-import os
+from bottle import route, run, template, view, static_file, redirect
 import common
-from bottle import route, run, template, view, static_file, redirect, TEMPLATE_PATH
 
 @route('/views/css/<filename>')
 def server_static(filename):
@@ -15,32 +14,33 @@ def server_static(filename):
 @view('start')
 def start(position=0):
     """Main page of web UI with playlist loaded"""
-    player_mode = PLAYER.load_current_mode()
+    mode = PLAYER.load_current_mode()
     position = PLAYER.load_playlist_position()
-    if player_mode == "iptv":
-        PLAYER.load_main_playlist()
+    if mode == "iptv":
         return template(
-                'start',
-                playing=PLAYER.playlist[position],
-                player=PLAYER,
-                mode=player_mode
-                )
-    elif player_mode == "video":
+            'start',
+            playing=PLAYER.playlist[position],
+            player=PLAYER,
+            mode=player_mode
+            )
+    elif mode == "video":
         PLAYER.load_video_files()
         PLAYER.load_subtitle_files()
         PLAYER.load_video_directories()
         video = PLAYER.video[1] if PLAYER.video is not None else "Nevybráno"
         return template(
-                'start',
-                playing=video,
-                player=PLAYER,
-                mode=player_mode
-                )
+            'start',
+            playing=video,
+            player=PLAYER,
+            mode=mode
+            )
 
 @route('/mode/<mode>')
 @view('start')
 def player_mode(mode="iptv"):
     """Toggle between IPTV, video and audio modes"""
+    if mode == "iptv":
+        PLAYER.load_main_playlist()
     PLAYER.save_current_mode(mode)
     redirect("/start")
 
@@ -82,18 +82,20 @@ def select_dir(selected=None):
 @route('/seek/<direction>')
 @view('play')
 def seek_video(direction=None):
+    """Jump in time in current file"""
     PLAYER.seek_video(direction)
     redirect("/start")
 
 @route('/subtitle/<direction>')
 @view('play')
 def delay_subtitle(direction=None):
+    """Set subtitle delay"""
     PLAYER.delay_subtitle(direction)
     redirect("/start")
 
 @route('/play_video')
 @view('play')
-def play_video(selected=None):
+def play_video():
     """Play video with posibility of subtitle loaded"""
     PLAYER.mpv_command("playlist-clear")
     PLAYER.mpv_command("sub-remove")
