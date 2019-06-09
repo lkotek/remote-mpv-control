@@ -221,7 +221,11 @@ class BaseMpv():
         video_dir = os.path.expanduser(self.video_dir[0])
         allowed_extensions = [".mkv", ".avi", ".mp4", ".ogg", ".ogv", ".mpg", ".mpeg"]
         temp_videos = {}
-        for counter, video_file in enumerate(os.listdir(video_dir)):
+        video_files = os.listdir(video_dir)
+        video_files.sort(
+            key=lambda i: os.path.getmtime(os.path.join(video_dir, i))
+            )
+        for counter, video_file in enumerate(video_files):
             for extension in allowed_extensions:
                 if extension in video_file.lower():
                     temp_videos.update({
@@ -237,7 +241,11 @@ class BaseMpv():
         sub_dir = os.path.expanduser(self.video_dir[0])
         allowed_extensions = [".srt", ".sub"]
         temp_sub = {}
-        for counter, sub_file in enumerate(os.listdir(sub_dir)):
+        sub_files = os.listdir(sub_dir)
+        sub_files.sort(
+            key=lambda i: os.path.getmtime(os.path.join(sub_dir, i))
+            )
+        for counter, sub_file in enumerate(sub_files):
             for extension in allowed_extensions:
                 if extension in sub_file.lower():
                     temp_sub.update({

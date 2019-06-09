@@ -36,9 +36,10 @@ if __name__ == "__main__":
     subprocess.call([
         "mpv",
         f"--input-ipc-server={CONFIG['GENERAL']['ipc_socket']}",
-        "--ytdl=no", # Necessary to improve swtich time between playlist items
+        "--ytdl=no", # Necessary to improve switch time between playlist items
         "--fullscreen",
         "--fs-screen=all",
+        "--loop=inf",
         f"--sub-codepage=+{CONFIG['GENERAL']['subtitle_codepage']}",
         "--playlist",
         f"{CONFIG['GENERAL']['install_path']}/playlists/main.m3u"
