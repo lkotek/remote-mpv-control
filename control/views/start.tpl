@@ -73,13 +73,13 @@
 % if mode == "video":
 <h1>Vybrat složku:</h1>
 <ul>
-  % for item in sorted(player.video_dirs, reverse=True):
+  % for item in player.video_dirs:
     <li><a href="/select_dir/{{item}}">{{! player.video_dirs[item][1]}}</a></li>
   % end
 </ul>
 <h1 id="videos">Videa:</h1>
 <ul>
-  % for item in sorted(player.videos, reverse=True):
+  % for item in player.videos:
     <li><a href="/select_video/{{item}}">{{! player.videos[item][1]}}</a></li>
   % end
 </ul>
@@ -107,7 +107,7 @@
 </table>
 <h1>Titulky:</h1>
 <ul>
-  % for item in sorted(player.subtitles):
+  % for item in player.subtitles:
     <li><a href="/select_subtitle/{{item}}">{{! player.subtitles[item][1]}}</a></li>
   % end
 </ul>

@@ -223,7 +223,8 @@ class BaseMpv():
         temp_videos = {}
         video_files = os.listdir(video_dir)
         video_files.sort(
-            key=lambda i: os.path.getmtime(os.path.join(video_dir, i))
+            key=lambda i: os.path.getmtime(os.path.join(video_dir, i)), 
+            reverse=True
             )
         for counter, video_file in enumerate(video_files):
             for extension in allowed_extensions:
@@ -243,7 +244,8 @@ class BaseMpv():
         temp_sub = {}
         sub_files = os.listdir(sub_dir)
         sub_files.sort(
-            key=lambda i: os.path.getmtime(os.path.join(sub_dir, i))
+            key=lambda i: os.path.getmtime(os.path.join(sub_dir, i)), 
+            reverse=True
             )
         for counter, sub_file in enumerate(sub_files):
             for extension in allowed_extensions:
