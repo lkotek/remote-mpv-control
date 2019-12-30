@@ -31,7 +31,7 @@ if __name__ == "__main__":
         subprocess.call(f"{CONFIG['GENERAL']['install_path']}/control/playlists.py")
     # Run web based and bluetooth based interface
     WEBUI = subprocess.Popen(f"{CONFIG['GENERAL']['install_path']}/control/web.py")
-    BLUE = subprocess.Popen(f"{CONFIG['GENERAL']['install_path']}/control/bluetooth.py")
+    BLUE = subprocess.Popen(f"{CONFIG['GENERAL']['install_path']}/control/blue.py")
     # Run main mpv aplication
     subprocess.call([
         "mpv",
