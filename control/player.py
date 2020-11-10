@@ -40,8 +40,10 @@ if __name__ == "__main__":
         "--fullscreen",
         "--fs-screen=all",
         "--loop=inf",
+        "--hwdec=auto-safe",
         f"--sub-codepage=+{CONFIG['GENERAL']['subtitle_codepage']}",
-        "--playlist",
-        f"{CONFIG['GENERAL']['install_path']}/playlists/main.m3u"
+        f"--playlist={CONFIG['GENERAL']['install_path']}/playlists/main.m3u"
+        ])
+
         ])
     atexit.register(close_ui, webui=WEBUI, bluetooth=BLUE)
