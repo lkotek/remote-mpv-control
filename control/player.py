@@ -17,33 +17,24 @@ def create_ipc_socket(sock):
     except OSError as error:
         print("Socket couldn't be created: ", error)
 
-def close_ui(webui, bluetooth):
+def close_ui(webui):
     """Close all UI when player is closed"""
     webui.kill()
-    bluetooth.kill()
 
 if __name__ == "__main__":
     CONFIG = common.read_config()
     os.chdir(f"{CONFIG['GENERAL']['install_path']}/control")
     create_ipc_socket(CONFIG["GENERAL"]["ipc_socket"])
-    # Optional - generate main (main.m3u) playlist if this option is present in configuration file
-    if "PLAYLIST" in CONFIG:
-        subprocess.call(f"{CONFIG['GENERAL']['install_path']}/control/playlists.py")
-    # Run web based and bluetooth based interface
+    # Run web based interface
     WEBUI = subprocess.Popen(f"{CONFIG['GENERAL']['install_path']}/control/web.py")
-    BLUE = subprocess.Popen(f"{CONFIG['GENERAL']['install_path']}/control/blue.py")
     # Run main mpv aplication
     subprocess.call([
         "mpv",
         f"--input-ipc-server={CONFIG['GENERAL']['ipc_socket']}",
         "--ytdl=no", # Necessary to improve switch time between playlist items
-        "--fullscreen",
-        "--fs-screen=all",
         "--loop=inf",
         "--hwdec=auto-safe",
         f"--sub-codepage=+{CONFIG['GENERAL']['subtitle_codepage']}",
         f"--playlist={CONFIG['GENERAL']['install_path']}/playlists/main.m3u"
         ])
-
-        ])
-    atexit.register(close_ui, webui=WEBUI, bluetooth=BLUE)
+    atexit.register(close_ui, webui=WEBUI)

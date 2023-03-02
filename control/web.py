@@ -67,13 +67,6 @@ def select_video(selected=None):
     PLAYER.video = PLAYER.videos[selected]
     redirect("/start#selection")
 
-@route('/select_subtitle/<selected>')
-@view('play')
-def select_subtitle(selected=None):
-    """Select video and jum to subtitle selection"""
-    PLAYER.subtitle = PLAYER.subtitles[selected]
-    redirect("/start#selection")
-
 @route('/select_dir/<selected>')
 @view('play')
 def select_dir(selected=None):
@@ -88,13 +81,6 @@ def seek_video(direction=None):
     PLAYER.seek_video(direction)
     redirect("/start")
 
-@route('/subtitle/<direction>')
-@view('play')
-def delay_subtitle(direction=None):
-    """Set subtitle delay"""
-    PLAYER.delay_subtitle(direction)
-    redirect("/start")
-
 @route('/play_video')
 @view('play')
 def play_video():
@@ -106,33 +92,11 @@ def play_video():
         PLAYER.open_subtitle(PLAYER.subtitle[0])
     redirect("/start#top")
 
-@route('/select_reset')
-@view('play')
-def select_reset():
-    """Select video and jum to subtitle selection"""
-    PLAYER.subtitle = None
-    PLAYER.video = None
-    redirect("/start")
-
 @route('/control/<key>')
 @view('start')
 def control(key=None):
     """Execute allowed (dict defined) remote control commands for mpv"""
     PLAYER.mpv_execute(key)
-    redirect("/start")
-
-@route('/window/screen')
-@view('start')
-def window():
-    """Toggle between fulscreen and window"""
-    PLAYER.mpv_execute("screen")
-    redirect("/start")
-
-@route('/window/aspect')
-@view('start')
-def aspect():
-    """Toggle between different aspect ratio settings"""
-    PLAYER.mpv_execute("aspect")
     redirect("/start")
 
 @route('/volume/<change>')
@@ -142,23 +106,11 @@ def volume(change=None):
     PLAYER.change_volume(change)
     redirect("/start")
 
-@route('/poweroff')
-def poweroff():
-    """Power of whole PC"""
-    PLAYER.set_poweroff()
-    redirect("/control/pause")
-
 @route('/playeroff')
 def playeroff():
     """Close mpv player only"""
     PLAYER.set_playeroff()
     exit(0)
-
-@route('/sleep')
-def sleep():
-    """Pause player and put screen to sleep"""
-    PLAYER.set_sleep()
-    redirect("/control/pause")
 
 if __name__ == "__main__":
     PLAYER = common.BaseMpv()

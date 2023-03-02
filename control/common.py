@@ -40,9 +40,7 @@ class BaseMpv():
         self.cmd_map = {
             "pause": "cycle pause",
             "prev": "playlist-prev",
-            "next": "playlist-next",
-            "screen": "cycle fullscreen",
-            "aspect": "cycle-values video-aspect 16:9 4:3 2.35:1 -1"
+            "next": "playlist-next"
             }
         # Set fullscreen and default volume at startup
         self.change_volume("default")
@@ -76,14 +74,6 @@ class BaseMpv():
             print(error)
             exit(1)
 
-    def set_sleep(self):
-        """Pause playback and power off display"""
-        self.run_os_popen("xset -display :$(w | grep gdm-x-session | cut -d: -f2) dpms force off")
-
-    def set_poweroff(self):
-        """Turn down whole system"""
-        self.run_os_popen("sudo /sbin/shutdown -h now")
-
     def set_playeroff(self):
         """Turn down player only"""
         self.mpv_command("quit")
@@ -100,10 +90,6 @@ class BaseMpv():
         if key == "pause":
             self.show_text("Pauza / přehrát")
         self.mpv_command(self.cmd_map[key])
-
-    def show_text(self, text):
-        """Show text to mpv screen"""
-        self.mpv_command(f'show-text \"{text}\"')
 
     def key_command(self, key_cmd):
         """Execute keypress to control mpv"""
@@ -237,27 +223,6 @@ class BaseMpv():
                     })
         self.videos = temp_videos
 
-    def load_subtitle_files(self):
-        """List subtitle files in multimedia directory"""
-        sub_dir = os.path.expanduser(self.video_dir[0])
-        allowed_extensions = [".srt", ".sub"]
-        temp_sub = {}
-        sub_files = os.listdir(sub_dir)
-        sub_files.sort(
-            key=lambda i: os.path.getmtime(os.path.join(sub_dir, i)), 
-            reverse=True
-            )
-        for counter, sub_file in enumerate(sub_files):
-            for extension in allowed_extensions:
-                if extension in sub_file.lower():
-                    temp_sub.update({
-                        f"subtitle-{counter}":[
-                            f"{sub_dir}/{sub_file}",
-                            sub_file
-                        ]
-                    })
-        self.subtitles = temp_sub
-
     def open_video(self, video_file):
         """Open single video file"""
         self.mpv_command(f"loadfile \"{video_file}\"")
@@ -270,14 +235,3 @@ class BaseMpv():
         else:
             self.mpv_command("seek -15")
             self.show_text("Posouvám vzad")
-
-    def open_subtitle(self, subtitle_file):
-        """Open file with subtitles for video"""
-        self.mpv_command(f"sub-add \"{subtitle_file}\"")
-
-    def delay_subtitle(self, direction):
-        """Subtitle delay to match timing with video"""
-        if direction == "forward":
-            self.key_command("z")
-        else:
-            self.key_command("Z")
